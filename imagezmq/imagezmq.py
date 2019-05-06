@@ -32,6 +32,12 @@ class ImageSender():
         Expects an open socket at the connect_to tcp address; it will
         connect to that remote socket after setting up the REQ
         socket on this computer.
+
+        :param send_timeout [OPTIONAL] the number of seconds to wait for the socket to connect to the
+                            server before throwing a timeout exception
+        :param recv_timeout [OPTIONAL] the number of seconds to wait for the socket to read the response
+                            from the server before throwing a timeout exception.
+
         """
 
         self.zmq_context = SerializingContext()
