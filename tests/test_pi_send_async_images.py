@@ -20,7 +20,7 @@ image_count = 0
 print("Press ctrl-c to stop async image sending")
 while True:
     frame = video_stream.read()
-    if frame:
+    if frame is not None:
         frame = imutils.rotate(frame, 90)
 
     async_image_sender1.send_frame_async(frame)
