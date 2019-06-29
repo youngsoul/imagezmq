@@ -10,6 +10,7 @@ Test file that will create 2 AsyncImageSender classes and send an image to the s
 """
 
 video_stream = VideoStream(usePiCamera=True).start()
+video_stream.stream.camera.rotation=90
 
 async_image_sender1 = AsyncImageSender(server_name='test image sender 1', server_ip='192.168.1.208', port=5555, send_timeout=10, recv_timeout=10)
 async_image_sender1.run_in_background()
