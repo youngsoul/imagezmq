@@ -41,6 +41,7 @@ class AsyncImageSender(object):
                 except Exception as exc:
                     getLogger("AsyncImageSender").error("send_image exception")
                     getLogger("AsyncImageSender").error(f"Exception msg: {exc}")
+                    print(exc)
                     time.sleep(6)  # something happened, force a timeout
                     raise TimeoutError
             except TimeoutError:
