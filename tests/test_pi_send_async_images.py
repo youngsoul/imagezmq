@@ -27,13 +27,13 @@ while True:
     if frame is not None:
         frame = imutils.rotate(frame, 90)
 
-    async_image_sender1.send_frame_async(frame)
+        async_image_sender1.send_frame_async(frame)
 
-    image_count += 1
+        image_count += 1
 
-    print(".", end="", flush=True)
-    if image_count > 0 and image_count % 25 == 0:
-        print("")
+        print(".", end="", flush=True)
+        if image_count > 0 and image_count % 25 == 0:
+            print("")
 
     time.sleep(0.25)
 
