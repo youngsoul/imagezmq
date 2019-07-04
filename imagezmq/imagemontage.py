@@ -5,14 +5,15 @@ import imutils
 from imagezmq.imagezmq import ImageHub
 import cv2
 import threading
-
+import time
 
 class ImageMontage(object):
 
-    def __init__(self, number_of_rows=1, number_of_columns=1, image_width=400):
+    def __init__(self, number_of_rows=1, number_of_columns=1, image_width=400, show_frame_rate=0):
         self.number_of_rows = number_of_rows
         self.number_of_columns = number_of_columns
         self.image_width = image_width
+        self.show_frame_rate = show_frame_rate
 
     def disply_montage(self):
         # initialize the ImageHub object
@@ -22,9 +23,20 @@ class ImageMontage(object):
         # 1 row (mH) and 2 columns (mW)
         mW = self.number_of_columns
         mH = self.number_of_rows
+
+        start = time.time()
+        frame_count = 0
         while True:
             (serverName, frame) = imageHub.recv_image()
             imageHub.send_reply(b'OK')
+
+            if self.show_frame_rate > 0:
+                frame_count += 1
+                delta = time.time() - start
+                if delta > self.show_frame_rate:
+                    print(f"Received {(frame_count/delta)} frames/sec")
+                    start = time.time()
+                    frame_count = 0
 
             frame = imutils.resize(frame, width=self.image_width)
             (h, w) = frame.shape[:2]
