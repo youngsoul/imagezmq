@@ -25,41 +25,46 @@ class AsyncImageSender(object):
         self.frame_queue = Queue()
         self.background_thread = None
         self.show_frame_rate = show_frame_rate
+        self.sender = None
 
     def _create_sender(self):
         connect_to = f'tcp://{self.server_ip}:{self.port}'
         sender = ImageSender(connect_to=connect_to, send_timeout=self.send_timeout, recv_timeout=self.recv_timeout)
         return sender
 
-    def _send_frame_background_function(self):
-        sender = self._create_sender()
-
+    def _send_immediate(self, frame):
         start = time.time()
         frame_count = 0
 
-        while True:
+        try:
+
+            if self.show_frame_rate > 0:
+                frame_count += 1
+                delta = time.time() - start
+                if delta > self.show_frame_rate:
+                    print(f"Sending {(frame_count / delta)} frames/sec")
+                    start = time.time()
+                    frame_count = 0
+
             try:
-                frame = self.frame_queue.get()
+                hub_reply = self.sender.send_image(self.server_name, frame)
+            except Exception as exc:
+                getLogger("AsyncImageSender").error("send_image exception")
+                getLogger("AsyncImageSender").error(f"Exception msg: {exc}")
+                print(exc)
+                time.sleep(6)  # something happened, force a timeout
+                raise TimeoutError
+        except TimeoutError:
+            getLogger("AsyncImageSender").error("Sending timeout.. reconnect to server")
+            self.sender = self._create_sender()
 
-                if self.show_frame_rate > 0:
-                    frame_count += 1
-                    delta = time.time() - start
-                    if delta > self.show_frame_rate:
-                        print(f"Sending {(frame_count / delta)} frames/sec")
-                        start = time.time()
-                        frame_count = 0
+    def _send_frame_background_function(self):
+        self.sender = self._create_sender()
 
-                try:
-                    hub_reply = sender.send_image(self.server_name, frame)
-                except Exception as exc:
-                    getLogger("AsyncImageSender").error("send_image exception")
-                    getLogger("AsyncImageSender").error(f"Exception msg: {exc}")
-                    print(exc)
-                    time.sleep(6)  # something happened, force a timeout
-                    raise TimeoutError
-            except TimeoutError:
-                getLogger("AsyncImageSender").error("Sending timeout.. reconnect to server")
-                sender = self._create_sender()
+        while True:
+            frame = self.frame_queue.get()
+            self._send_immediate(frame)
+
 
     def run_in_background(self):
         self.background_thread = threading.Thread(target=self._send_frame_background_function, args=())
@@ -68,6 +73,13 @@ class AsyncImageSender(object):
 
     def send_frame_async(self, frame):
         self.frame_queue.put_nowait(frame)
+        return
+
+    def send_frame_immediate(self, frame):
+        if self.background_thread is not None:
+            raise Exception("Cannot send a frame immediately if there is a background thread running")
+
+        self._send_immediate(frame)
         return
 
     def queue_size(self):
