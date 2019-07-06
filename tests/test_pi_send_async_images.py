@@ -21,7 +21,7 @@ ap.add_argument("-r", "--rotate", required=False, default=0, help="Rotate the im
 
 args = vars(ap.parse_args())
 server_ip = args['server_ip']
-rotation = args['rotate']
+rotation = float(args['rotate'])
 
 # get the host name, initialize the video stream, and allow the
 # camera sensor to warmup
