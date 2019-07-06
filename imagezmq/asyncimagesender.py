@@ -47,7 +47,10 @@ class AsyncImageSender(object):
                     frame_count = 0
 
             try:
+                s = time.time()
                 hub_reply = self.sender.send_image(self.server_name, frame)
+                e = time.time()
+                print(f"Send time: {(e-s)} seconds")
             except Exception as exc:
                 getLogger("AsyncImageSender").error("send_image exception")
                 getLogger("AsyncImageSender").error(f"Exception msg: {exc}")
