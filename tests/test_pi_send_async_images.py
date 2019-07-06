@@ -33,14 +33,14 @@ rpiName = socket.gethostname()
 
 video_stream = VideoStream(usePiCamera=True).start()
 
-async_image_sender1 = AsyncImageSender(server_name=rpiName, server_ip=server_ip, port=5555, send_timeout=10, recv_timeout=10, show_frame_rate=10, backlog=backlog)
+async_image_sender1 = AsyncImageSender(server_name=rpiName, server_ip=server_ip, port=5555, send_timeout=10, recv_timeout=10, show_frame_rate=0, backlog=backlog)
 async_image_sender1.run_in_background()
 
 image_count = 0
 
 print("Press ctrl-c to stop async image sending")
 sleep_time = 0.25
-
+show_info = False
 while True:
     frame = video_stream.read()
     if frame is not None:
@@ -52,20 +52,22 @@ while True:
         image_count += 1
 
         # print(".", end="", flush=True)
-        if image_count > 0 and image_count % 25 == 0:
-            qsize = async_image_sender1.queue_size()
-            if backlog > 0:
-                # then the user specified a backlog, check to see if we are under the backlog number
-                # and if we are - try to decrease the sleep_time for better frame rate.  if we are at
-                # the limit - then increase the sleep_time
-                if qsize < backlog:
-                    if sleep_time > 0.05: # dont go to zero
-                        sleep_time = sleep_time - 0.05
-                else:
-                    if sleep_time < 0.25:
-                        sleep_time = sleep_time + 0.05
-                print(f"frame pooling time: {sleep_time}")
-            print(f"Queue Size: {qsize}")
+
+        if show_info:
+            if image_count > 0 and image_count % 25 == 0:
+                qsize = async_image_sender1.queue_size()
+                if backlog > 0:
+                    # then the user specified a backlog, check to see if we are under the backlog number
+                    # and if we are - try to decrease the sleep_time for better frame rate.  if we are at
+                    # the limit - then increase the sleep_time
+                    if qsize < backlog:
+                        if sleep_time > 0.05: # dont go to zero
+                            sleep_time = sleep_time - 0.05
+                    else:
+                        if sleep_time < 0.25:
+                            sleep_time = sleep_time + 0.05
+                    print(f"frame pooling time: {sleep_time}")
+                print(f"Queue Size: {qsize}")
 
     time.sleep(sleep_time)
 
