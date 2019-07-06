@@ -25,6 +25,7 @@ args = vars(ap.parse_args())
 server_ip = args['server_ip']
 rotation = float(args['rotate'])
 backlog = int(args['backlog'])
+print(f"Backlog: {backlog}")
 
 # get the host name, initialize the video stream, and allow the
 # camera sensor to warmup

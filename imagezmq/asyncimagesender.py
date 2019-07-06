@@ -74,6 +74,7 @@ class AsyncImageSender(object):
 
     def send_frame_async(self, frame):
         if self.backlog > 0 and self.frame_queue.qsize() > self.backlog:
+            print("no put")
             return
         print(f"Put frame: {self.frame_queue.qsize()}")
         self.frame_queue.put_nowait(frame)
