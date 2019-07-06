@@ -53,7 +53,19 @@ while True:
 
         # print(".", end="", flush=True)
         if image_count > 0 and image_count % 25 == 0:
-            print(f"Queue Size: {async_image_sender1.queue_size()}")
+            qsize = async_image_sender1.queue_size()
+            if backlog > 0:
+                # then the user specified a backlog, check to see if we are under the backlog number
+                # and if we are - try to decrease the sleep_time for better frame rate.  if we are at
+                # the limit - then increase the sleep_time
+                if qsize < backlog:
+                    if sleep_time > 0.05: # dont go to zero
+                        sleep_time = sleep_time - 0.05
+                else:
+                    if sleep_time < 0.25:
+                        sleep_time = sleep_time + 0.05
+                print(f"frame pooling time: {sleep_time}")
+            print(f"Queue Size: {qsize}")
 
     time.sleep(sleep_time)
 
