@@ -46,8 +46,8 @@ while True:
         image_count += 1
 
         # print(".", end="", flush=True)
-        # if image_count > 0 and image_count % 25 == 0:
-        #     print("")
+        if image_count > 0 and image_count % 25 == 0:
+            print(f"Queue Size: {async_image_sender1.queue_size()}")
 
     time.sleep(0.1)
 
