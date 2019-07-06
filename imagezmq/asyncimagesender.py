@@ -79,6 +79,9 @@ class AsyncImageSender(object):
         if self.background_thread is not None:
             raise Exception("Cannot send a frame immediately if there is a background thread running")
 
+        if self.sender is None:
+            self.sender = self._create_sender()
+
         self._send_immediate(frame)
         return
 
