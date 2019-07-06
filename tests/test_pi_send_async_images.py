@@ -45,9 +45,9 @@ while True:
 
         image_count += 1
 
-        print(".", end="", flush=True)
-        if image_count > 0 and image_count % 25 == 0:
-            print("")
+        # print(".", end="", flush=True)
+        # if image_count > 0 and image_count % 25 == 0:
+        #     print("")
 
     time.sleep(0.25)
 
