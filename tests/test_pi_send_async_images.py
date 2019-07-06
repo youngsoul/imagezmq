@@ -17,11 +17,14 @@ Test file that will create 2 AsyncImageSender classes and send an image to the s
 ap = argparse.ArgumentParser()
 ap.add_argument("-s", "--server-ip", required=False, default='192.168.1.208',
                 help="ip address of the server to which the client will connect")
-ap.add_argument("-r", "--rotate", required=False, default=0, help="Rotate the image by the provided degrees")
+ap.add_argument("-r", "--rotate", required=False, type=float, default=0, help="Rotate the image by the provided degrees")
+ap.add_argument("-b", "--backlog", required=False, type=int, default=0, help="Maximum number of messages in the queue before waiting for room")
+
 
 args = vars(ap.parse_args())
 server_ip = args['server_ip']
 rotation = float(args['rotate'])
+backlog = int(args['backlog'])
 
 # get the host name, initialize the video stream, and allow the
 # camera sensor to warmup

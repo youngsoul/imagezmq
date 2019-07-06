@@ -16,7 +16,7 @@ NOTE: the tests ( but not this class ) assume you have OpenCV and imutils instal
 """
 class AsyncImageSender(object):
 
-    def __init__(self, server_name="server", server_ip='127.0.0.1', port=5555,  send_timeout=0, recv_timeout=0, show_frame_rate=0):
+    def __init__(self, server_name="server", server_ip='127.0.0.1', port=5555,  send_timeout=0, recv_timeout=0, show_frame_rate=0, backlog=0):
         self.server_name = server_name
         self.server_ip = server_ip
         self.port = port
@@ -26,6 +26,7 @@ class AsyncImageSender(object):
         self.background_thread = None
         self.show_frame_rate = show_frame_rate
         self.sender = None
+        self.backlog = 0
 
     def _create_sender(self):
         connect_to = f'tcp://{self.server_ip}:{self.port}'
@@ -47,10 +48,7 @@ class AsyncImageSender(object):
                     frame_count = 0
 
             try:
-                s = time.time()
                 hub_reply = self.sender.send_image(self.server_name, frame)
-                e = time.time()
-                print(f"Send time: {(e-s)} seconds")
             except Exception as exc:
                 getLogger("AsyncImageSender").error("send_image exception")
                 getLogger("AsyncImageSender").error(f"Exception msg: {exc}")
@@ -75,6 +73,9 @@ class AsyncImageSender(object):
         self.background_thread.start()
 
     def send_frame_async(self, frame):
+        if self.backlog > 0 and self.frame_queue.qsize() > self.backlog:
+            return
+
         self.frame_queue.put_nowait(frame)
         return
 
