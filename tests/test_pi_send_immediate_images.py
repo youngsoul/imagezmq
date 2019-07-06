@@ -49,6 +49,7 @@ while True:
         # print(".", end="", flush=True)
         if image_count > 0 and image_count % 25 == 0:
             print(f"Queue Size: {async_image_sender1.queue_size()}")
+            print(f"Frame shape: {frame.shape}")
 
     time.sleep(sleep_time)
 
