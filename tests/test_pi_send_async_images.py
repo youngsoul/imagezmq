@@ -41,8 +41,6 @@ while True:
         if rotation != 0:
             frame = imutils.rotate(frame, rotation)
 
-        frame = imutils.rotate(frame, 90)
-
         async_image_sender1.send_frame_async(frame)
 
         image_count += 1
