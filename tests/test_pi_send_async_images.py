@@ -49,6 +49,6 @@ while True:
         # if image_count > 0 and image_count % 25 == 0:
         #     print("")
 
-    time.sleep(0.25)
+    time.sleep(0.1)
 
 
