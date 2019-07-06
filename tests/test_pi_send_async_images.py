@@ -17,9 +17,11 @@ Test file that will create 2 AsyncImageSender classes and send an image to the s
 ap = argparse.ArgumentParser()
 ap.add_argument("-s", "--server-ip", required=False, default='192.168.1.208',
                 help="ip address of the server to which the client will connect")
+ap.add_argument("-r", "--rotate", required=False, default=0, help="Rotate the image by the provided degrees")
 
 args = vars(ap.parse_args())
 server_ip = args['server_ip']
+rotation = args['rotate']
 
 # get the host name, initialize the video stream, and allow the
 # camera sensor to warmup
@@ -36,6 +38,9 @@ print("Press ctrl-c to stop async image sending")
 while True:
     frame = video_stream.read()
     if frame is not None:
+        if rotation != 0:
+            frame = imutils.rotate(frame, rotation)
+
         frame = imutils.rotate(frame, 90)
 
         async_image_sender1.send_frame_async(frame)
