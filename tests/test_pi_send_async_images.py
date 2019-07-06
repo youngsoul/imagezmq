@@ -32,7 +32,7 @@ rpiName = socket.gethostname()
 
 video_stream = VideoStream(usePiCamera=True).start()
 
-async_image_sender1 = AsyncImageSender(server_name=rpiName, server_ip=server_ip, port=5555, send_timeout=10, recv_timeout=10, show_frame_rate=10)
+async_image_sender1 = AsyncImageSender(server_name=rpiName, server_ip=server_ip, port=5555, send_timeout=10, recv_timeout=10, show_frame_rate=10, backlog=backlog)
 async_image_sender1.run_in_background()
 
 image_count = 0
