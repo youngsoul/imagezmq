@@ -33,7 +33,7 @@ async_image_sender1 = AsyncImageSender(server_name=rpiName, server_ip=server_ip,
 
 image_count = 0
 
-print("Press ctrl-c to stop async image sending")
+print("Press ctrl-c to stop image sending")
 sleep_time = 0.25
 
 while True:
