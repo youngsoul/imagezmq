@@ -14,9 +14,12 @@ each of the test ImageSenders
 NOTE: the tests ( but not this class ) assume you have OpenCV and imutils installed.
 
 """
+
+
 class AsyncImageSender(object):
 
-    def __init__(self, server_name="server", server_ip='127.0.0.1', port=5555,  send_timeout=0, recv_timeout=0, show_frame_rate=0, backlog=0):
+    def __init__(self, server_name="server", server_ip='127.0.0.1', port=5555, send_timeout=0, recv_timeout=0,
+                 show_frame_rate=0, backlog=0):
         self.server_name = server_name
         self.server_ip = server_ip
         self.port = port
@@ -66,7 +69,6 @@ class AsyncImageSender(object):
             frame = self.frame_queue.get()
             self._send_immediate(frame)
 
-
     def run_in_background(self):
         self.background_thread = threading.Thread(target=self._send_frame_background_function, args=())
         self.background_thread.daemon = True
@@ -74,9 +76,8 @@ class AsyncImageSender(object):
 
     def send_frame_async(self, frame):
         if self.backlog > 0 and self.frame_queue.qsize() > self.backlog:
-            print("no put")
             return
-        print(f"Put frame: {self.frame_queue.qsize()}")
+
         self.frame_queue.put_nowait(frame)
         return
 
