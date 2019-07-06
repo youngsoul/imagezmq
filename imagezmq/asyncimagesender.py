@@ -26,7 +26,7 @@ class AsyncImageSender(object):
         self.background_thread = None
         self.show_frame_rate = show_frame_rate
         self.sender = None
-        self.backlog = 0
+        self.backlog = backlog
 
     def _create_sender(self):
         connect_to = f'tcp://{self.server_ip}:{self.port}'
